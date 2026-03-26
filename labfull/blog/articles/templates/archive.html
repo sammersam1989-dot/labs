@@ -1,0 +1,279 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django публичный блог</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #d0f0e0;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .header {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo a {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: #2c6e49;
+        }
+        .auth-links a {
+            margin-left: 1rem;
+            text-decoration: none;
+            color: #161616;
+        }
+        .admin-link, .new-post-link {
+            background: #6acc95;
+            color: rgb(0, 0, 0);
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            margin-left: 0.5rem;
+        }
+        .admin-link:hover, .new-post-link:hover {
+            background: #1e4d32;
+        }
+        .search-form {
+            margin: 1rem 0;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .search-form input {
+            flex: 1;
+            padding: 0.7rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+        }
+        .search-form button {
+            background: #2c6e49;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.2rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+        .search-form button:hover {
+            background: #1e4d32;
+        }
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .post-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .post-card:hover {
+            transform: translateY(-4px);
+        }
+        .post-title a {
+            text-decoration: none;
+            color: #1e293b;
+            font-size: 1.25rem;
+        }
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .post-content {
+            margin-bottom: 1rem;
+            color: #334155;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            max-height: 200px;
+        }
+        .post-content.folded {
+            max-height: 0;
+            margin: 0;
+        }
+        .post-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .fold-button, .read-more {
+            background: #2c6e49;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            font-size: 0.875rem;
+        }
+        .fold-button:hover, .read-more:hover {
+            background: #1e4d32;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 2rem 0;
+        }
+        .pagination a, .pagination .current-page {
+            padding: 0.5rem 0.8rem;
+            background: white;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            color: #2c6e49;
+            border: 1px solid #cbd5e1;
+        }
+        .pagination .current-page {
+            background: #2c6e49;
+            color: white;
+            border: none;
+        }
+        .pagination a:hover {
+            background: #e2e8f0;
+        }
+        .no-posts {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+        }
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: #2c6e49;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 2rem;
+        }
+        .messages {
+            margin: 1rem 0;
+        }
+        .alert {
+            padding: 0.7rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .alert.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .alert.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="/">Django Блог</a>
+                </div>
+                <div class="auth-links">
+                    {% if user.is_authenticated %}
+                        <span>Привет, {{ user.username }}!</span>
+                        {% if user.is_superuser %}
+                            <a href="/admin/" class="admin-link"> Админ-панель</a>
+                        {% endif %}
+                        <a href="/article/new/" class="new-post-link">Добавить новую статью</a>
+                        <a href="/logout/">Выход</a>
+                    {% else %}
+                        <a href="/register/">Регистрация</a>
+                        <a href="/login/">Вход</a>
+                    {% endif %} 
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="alert {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form class="search-form" method="get">
+                <input type="text" name="q" placeholder="Поиск по статьям..." value="{{ query|default:'' }}">
+                <button type="submit">Найти</button>
+            </form>
+
+            <div class="posts-grid">
+                {% for post in posts %}
+                    <article class="post-card" data-id="{{ post.id }}">
+                        <h2 class="post-title">
+                            <a href="{% url 'get_article' post.id %}">{{ post.title }}</a>
+                        </h2>
+                        <div class="post-meta">
+                            <span class="post-author">{{ post.author.username }}</span>
+                            <span class="post-date">{{ post.created_date|date:"d M Y, H:i" }}</span>
+                        </div>
+                        <div class="post-content">
+                            {{ post.get_excerpt|safe }}
+                        </div>
+                        <div class="post-actions">
+                            <button class="fold-button">Свернуть</button>
+                            <a href="{% url 'get_article' post.id %}" class="read-more">Читать дальше →</a>
+                        </div>
+                    </article>
+                {% empty %}
+                    <p class="no-posts">Пока нет статей. <a href="/article/new/">Напишите первую</a>!</p>
+                {% endfor %}
+            </div>
+
+            {% if posts.has_other_pages %}
+                <div class="pagination">
+                    {% if posts.has_previous %}
+                        <a href="?page={{ posts.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">← Назад</a>
+                    {% endif %}
+
+                    {% for num in posts.paginator.page_range %}
+                        {% if posts.number == num %}
+                            <strong class="current-page">{{ num }}</strong>
+                        {% else %}
+                            <a href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if posts.has_next %}
+                        <a href="?page={{ posts.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Вперёд →</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; {% now "Y" %} Django Блог</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/fold-post.js' %}"></script>
+</body>
+</html>

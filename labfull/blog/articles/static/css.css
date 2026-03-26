@@ -1,0 +1,129 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f8fafc;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+.header {
+    background: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 1rem 0;
+}
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo a {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: #3b82f6;
+}
+.auth-links a {
+    margin-left: 1rem;
+    text-decoration: none;
+    color: #3b82f6;
+}
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+.post-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+.post-title a {
+    text-decoration: none;
+    color: #1e293b;
+    font-size: 1.25rem;
+}
+.post-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0.5rem;
+}
+.post-content {
+    margin-bottom: 1rem;
+    color: #334155;
+}
+.post-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+.fold-button, .read-more {
+    background: #e2e8f0;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: #1e293b;
+    font-size: 0.875rem;
+}
+.read-more {
+    background: #3b82f6;
+    color: white;
+}
+.read-more:hover {
+    background: #2563eb;
+}
+.post-full {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin: 2rem 0;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+.post-full h1 {
+    font-size: 2rem;
+    margin-top: 0;
+}
+.back-link {
+    display: inline-block;
+    margin-top: 2rem;
+    color: #3b82f6;
+    text-decoration: none;
+}
+.back-link:hover {
+    text-decoration: underline;
+}
+.footer {
+    text-align: center;
+    padding: 2rem 0;
+    color: #64748b;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 2rem;
+}
+.post-content.folded {
+    display: none;
+}
+.new-post-link {
+    background: #2c6e49;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    margin-left: 0.5rem;
+}
+.new-post-link:hover {
+    background: #1e4d32;
+}
+.post-content.folded {
+    max-height: 0;
+    margin: 0;
+}
